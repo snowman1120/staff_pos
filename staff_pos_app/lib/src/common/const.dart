@@ -141,8 +141,7 @@ var primaryColor = const Color(0xff117fc1);
 var redColor = const Color(0xffee385a);
 var bodyColor = const Color(0xfffbfbfb);
 
-var licenseHtml =
-    r"""
+var licenseHtml = r"""
     <h5>（目的）</h5>
     <h3>第１条 本利用規約は、Devotionが提供するクラウドPOSアプリケーション「VISIT」(以下、本アプリ)の利用に関し、これを利用するすべての者に適用される利用条件その他の事項を定めることを目的とします。</h3>
     
@@ -217,3 +216,6 @@ var licenseHtml =
     <h3>第１３条 本利用規約及び本アプリの利用に関連するすべての事項の準拠法は、日本法とします。</h3>
     <h4>２ 本アプリの利用に起因又は関連してDevotionとアプリ利用者との間に生じたすべての紛争については、名古屋地方裁判所を第一審の専属的合意管轄裁判所とします。</h4>
 """;
+
+// ignore: constant_identifier_names
+const int MAX_TICKET_COUNT = 50;

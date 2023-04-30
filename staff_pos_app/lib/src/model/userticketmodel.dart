@@ -1,3 +1,5 @@
+import 'package:staff_pos_app/src/common/const.dart';
+
 class UserTicketModel {
   final String id;
   final String userId;
@@ -20,6 +22,7 @@ class UserTicketModel {
   String? resetTimeType;
   String? resetTimeValue;
   String? resetCount;
+  String? maxCount;
 
   UserTicketModel({
     required this.id,
@@ -65,6 +68,9 @@ class UserTicketModel {
     tmp.resetTimeType = json['reset_time_type'].toString();
     tmp.resetTimeValue = json['reset_time_value'].toString();
     tmp.resetCount = json['reset_count'].toString();
+    tmp.maxCount = json['max_count'] != 0
+        ? json['max_count'].toString()
+        : MAX_TICKET_COUNT.toString();
     return tmp;
   }
 
@@ -77,5 +83,6 @@ class UserTicketModel {
         'reset_time_type': resetTimeType,
         'reset_time_value': resetTimeValue,
         'reset_count': resetCount,
+        'max_count': maxCount,
       };
 }
