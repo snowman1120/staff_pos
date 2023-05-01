@@ -139,7 +139,8 @@ class _AdminUserEdit extends State<AdminUserEdit> {
       //       : ticketReset['ticket_value'].toString();
       // }
 
-      userTickets = await ClTicket().loadUserTickets(context, widget.userId, companyId);
+      userTickets =
+          await ClTicket().loadUserTickets(context, widget.userId, companyId);
     }
 
     orders = await ClOrder().loadOrderList(context, {
@@ -153,27 +154,32 @@ class _AdminUserEdit extends State<AdminUserEdit> {
   Future<void> saveUserInfo() async {
     bool isFormCheck = true;
     if (firstNameController.text == '') {
-      Fluttertoast.showToast(msg: '名前を入力してください。', toastLength: Toast.LENGTH_SHORT);
+      Fluttertoast.showToast(
+          msg: '名前を入力してください。', toastLength: Toast.LENGTH_SHORT);
       return;
     } else {
       errFirstName = null;
     }
 
     if (lastNameController.text == '') {
-      Fluttertoast.showToast(msg: '名前を入力してください。', toastLength: Toast.LENGTH_SHORT);
+      Fluttertoast.showToast(
+          msg: '名前を入力してください。', toastLength: Toast.LENGTH_SHORT);
       return;
     } else {
       errLastName = null;
     }
 
     if (phoneController.text == '') {
-      Fluttertoast.showToast(msg: '電話番号を入力してください。', toastLength: Toast.LENGTH_SHORT);
+      Fluttertoast.showToast(
+          msg: '電話番号を入力してください。', toastLength: Toast.LENGTH_SHORT);
     } else {
       errPhone = null;
     }
 
     if (pwController.text != pwConfController.text) {
-      Fluttertoast.showToast(msg: 'パスワードとパスワード確認は同一の内容をを入力してください。', toastLength: Toast.LENGTH_SHORT);
+      Fluttertoast.showToast(
+          msg: 'パスワードとパスワード確認は同一の内容をを入力してください。',
+          toastLength: Toast.LENGTH_SHORT);
       return;
     }
 
@@ -264,20 +270,24 @@ class _AdminUserEdit extends State<AdminUserEdit> {
                                 'メールアドレス',
                                 AdminTextInputNormal(
                                     controller: mailController)),
+                            if (globals.auth > constAuthGuest) AdminLineH1(),
                             if (globals.auth > constAuthGuest)
-                              AdminLineH1(),
-                            if (globals.auth > constAuthGuest)
-                            _getRowContent(
-                                'パスワード',
-                                AdminTextInputNormal(
-                                    controller: pwController, inputType: TextInputType.visiblePassword, obscureText: true,)),
-                            if (globals.auth > constAuthGuest)
-                              AdminLineH1(),
+                              _getRowContent(
+                                  'パスワード',
+                                  AdminTextInputNormal(
+                                    controller: pwController,
+                                    inputType: TextInputType.visiblePassword,
+                                    obscureText: true,
+                                  )),
+                            if (globals.auth > constAuthGuest) AdminLineH1(),
                             if (globals.auth > constAuthGuest)
                               _getRowContent(
                                   'パスワード確認',
                                   AdminTextInputNormal(
-                                    controller: pwConfController, inputType: TextInputType.visiblePassword, obscureText: true,)),
+                                    controller: pwConfController,
+                                    inputType: TextInputType.visiblePassword,
+                                    obscureText: true,
+                                  )),
                             AdminLineH1(),
                             _getRowContent('生年月日', _getBirthDayRender()),
                             AdminLineH1(),
@@ -452,12 +462,27 @@ class _AdminUserEdit extends State<AdminUserEdit> {
         RowLabelInput(
             labelWidth: 180,
             labelPadding: 6,
-            label: item.title + ' [' + item.name + ']',
+            label: '最大保有チケット数',
             renderWidget: DropDownNumberSelect(
                 contentPadding: EdgeInsets.all(6),
                 max: 99,
                 min: 0,
-                value: item.count,
+                value: item.maxCount,
+                tapFunc: (v) {
+                  item.maxCount = v;
+                  setState(() {});
+                })),
+        RowLabelInput(
+            labelWidth: 180,
+            labelPadding: 6,
+            label: item.title + ' [' + item.name + ']',
+            renderWidget: DropDownNumberSelect(
+                contentPadding: EdgeInsets.all(6),
+                max: int.parse(item.maxCount),
+                min: 0,
+                value: int.parse(item.count) > int.parse(item.maxCount)
+                    ? item.maxCount
+                    : item.count,
                 tapFunc: (v) => item.count = v)),
         RowLabelInput(
           labelWidth: 180,
@@ -517,9 +542,11 @@ class _AdminUserEdit extends State<AdminUserEdit> {
             label: 'リセット枚数',
             renderWidget: DropDownNumberSelect(
               contentPadding: EdgeInsets.all(6),
-              value: item.resetCount,
+              value: int.parse(item.resetCount) > int.parse(item.maxCount)
+                  ? item.maxCount
+                  : item.resetCount,
               plusnum: 10,
-              max: 99,
+              max: int.parse(item.maxCount),
               min: 0,
               tapFunc: item.isReset == '0'
                   ? null

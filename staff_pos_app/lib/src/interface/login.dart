@@ -67,15 +67,15 @@ class _Login extends State<Login> {
 
   Future<bool> normalAuthenticate() async {
     try {
-      final bool didAuthenticate = await auth.authenticate(
-          localizedReason: '認証してください。'
-      );
+      final bool didAuthenticate =
+          await auth.authenticate(localizedReason: '認証してください。');
       if (didAuthenticate) {
         await loginProcess(email!, password!, true);
       }
       return didAuthenticate;
     } on PlatformException catch (e) {
-      Fluttertoast.showToast(msg: 'システム設定でデバイスパスワードを設定してください。', toastLength: Toast.LENGTH_LONG);
+      Fluttertoast.showToast(
+          msg: 'システム設定でデバイスパスワードを設定してください。', toastLength: Toast.LENGTH_LONG);
       return false;
     }
   }
@@ -197,15 +197,15 @@ class _Login extends State<Login> {
     bool faceAuthDeviceStatus = await checkDeviceSupported();
     if (!faceAuthDeviceStatus) {
       isFaceId = false;
-    }else {
+    } else {
       String faceIdStatus = prefs.getString(globals.isBiometricEnableKey) ?? '';
       if (faceIdStatus == 'yes') {
         isFaceId = true;
         bool status = await normalAuthenticate();
         if (status) {
           // await loginProcess(email!, password!, true);
-        }else {}
-      }else {
+        } else {}
+      } else {
         isFaceId = false;
       }
     }
@@ -214,15 +214,15 @@ class _Login extends State<Login> {
     return '';
   }
 
-  Future<void> loginProcess(String email, String password, bool isBiometric) async {
+  Future<void> loginProcess(
+      String email, String password, bool isBiometric) async {
     if (!isFormInputCheck() && !isBiometric) {
       setState(() {});
       return;
     }
 
     Dialogs().loaderDialogNormal(context);
-    StaffModel? staff = await ClStaff()
-        .login(context, email, password);
+    StaffModel? staff = await ClStaff().login(context, email, password);
 
     if (staff == null) {
       Navigator.pop(context);
@@ -257,11 +257,11 @@ class _Login extends State<Login> {
     prefs.setString('login_id', emailController.text);
     prefs.setString('login_password', passController.text);
     // if (!isBiometric) {
-      if (isFaceId) {
-        prefs.setString(globals.isBiometricEnableKey, 'yes');
-      }else {
-        prefs.setString(globals.isBiometricEnableKey, 'no');
-      }
+    if (isFaceId) {
+      prefs.setString(globals.isBiometricEnableKey, 'yes');
+    } else {
+      prefs.setString(globals.isBiometricEnableKey, 'no');
+    }
     // } else {
     //   // prefs.setString('login_id', '');
     //   // prefs.setString('login_password', '');
@@ -300,13 +300,14 @@ class _Login extends State<Login> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (value) {
       prefs.setString(globals.isBiometricEnableKey, 'yes');
-    }else {
+    } else {
       prefs.setString(globals.isBiometricEnableKey, 'no');
     }
     if (await checkDeviceSupported()) {
       isFaceId = value;
-    }else {
-      Fluttertoast.showToast(msg: 'システム設定でデバイスパスワードを設定してください。', toastLength: Toast.LENGTH_LONG);
+    } else {
+      Fluttertoast.showToast(
+          msg: 'システム設定でデバイスパスワードを設定してください。', toastLength: Toast.LENGTH_LONG);
       isFaceId = false;
     }
     setState(() {});
@@ -317,41 +318,41 @@ class _Login extends State<Login> {
     globals.isWideScreen = (MediaQuery.of(context).size.height > 600 &&
         MediaQuery.of(context).size.width > 600);
     return WillPopScope(
-      onWillPop: () async => false,
-      child: GestureDetector(
-        onTap: () {
-          FocusScopeNode currentFocus = FocusScope.of(context);
-          if (!currentFocus.hasPrimaryFocus) {
-            currentFocus.unfocus();
-          }
-        },
-        child: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('images/background.jpg'),
-              fit: BoxFit.cover,
+        onWillPop: () async => false,
+        child: GestureDetector(
+          onTap: () {
+            FocusScopeNode currentFocus = FocusScope.of(context);
+            if (!currentFocus.hasPrimaryFocus) {
+              currentFocus.unfocus();
+            }
+          },
+          child: Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('images/background.jpg'),
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          child: Scaffold(
-              backgroundColor: Colors.transparent,
-              body: FutureBuilder<String>(
-                future: loadData,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return OrientationBuilder(builder: (context, orientation) {
-                      return _getBodyContent();
-                    });
-                  } else if (snapshot.hasError) {
-                    return Text("${snapshot.error}");
-                  }
+            child: Scaffold(
+                backgroundColor: Colors.transparent,
+                body: FutureBuilder<String>(
+                  future: loadData,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return OrientationBuilder(
+                          builder: (context, orientation) {
+                        return _getBodyContent();
+                      });
+                    } else if (snapshot.hasError) {
+                      return Text("${snapshot.error}");
+                    }
 
-                  // By default, show a loading spinner.
-                  return const Center(child: CircularProgressIndicator());
-                },
-              )),
-        ),
-      )
-    );
+                    // By default, show a loading spinner.
+                    return const Center(child: CircularProgressIndicator());
+                  },
+                )),
+          ),
+        ));
   }
 
   Widget _getBodyContent() {
@@ -456,7 +457,8 @@ class _Login extends State<Login> {
             : sizeLoginButtonWidthTablet,
       ),
       child: ElevatedButton(
-        onPressed: () => loginProcess(emailController.text, passController.text, false),
+        onPressed: () =>
+            loginProcess(emailController.text, passController.text, false),
         style: ElevatedButton.styleFrom(
           elevation: 0,
           primary: Colors.white.withOpacity(0.7),
