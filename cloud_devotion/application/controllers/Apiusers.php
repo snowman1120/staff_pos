@@ -255,6 +255,8 @@ class Apiusers extends WebController
             $user_tickets = json_decode($this->input->post('user_tickets'), true);
 //        $user_tickets = json_decode($s, true);
             foreach ($user_tickets as $user_ticket) {
+                if (intval($user_ticket['count']) > intval($user_ticket['max_count'])) 
+                    $user_ticket['count'] = $user_ticket['max_count'];
                 if (empty($user_ticket['id'])) {
                     $ticket = array(
                         'user_id' => $user_ticket['user_id'],
@@ -264,6 +266,7 @@ class Apiusers extends WebController
                         'reset_time_type' => $user_ticket['reset_time_type'],
                         'reset_time_value' => $user_ticket['reset_time_value'],
                         'reset_count' => $user_ticket['reset_count'],
+                        'max_count' => $user_ticket['max_count'],
                     );
 
                     $this->user_ticket_model->insertRecord($ticket);
@@ -276,6 +279,7 @@ class Apiusers extends WebController
                     $ticket['reset_time_type'] = $user_ticket['reset_time_type'];
                     $ticket['reset_time_value'] = $user_ticket['reset_time_value'];
                     $ticket['reset_count'] = $user_ticket['reset_count'];
+                    $ticket['max_count'] = $user_ticket['max_count'];
                     $this->user_ticket_model->updateRecord($ticket, 'id');
                 }
             }

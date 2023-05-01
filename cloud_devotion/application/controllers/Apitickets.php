@@ -170,6 +170,7 @@ class Apitickets extends WebController
             $tmp['reset_time_type'] = empty($uTicket['reset_time_type']) ? 0 : $uTicket['reset_time_type'];
             $tmp['reset_time_value'] = empty($uTicket['reset_time_value']) ? 0 : $uTicket['reset_time_value'];
             $tmp['reset_count'] = empty($uTicket['reset_count']) ? 0 : $uTicket['reset_count'];
+            $tmp['max_count'] = empty($uTicket['max_count']) ? 0 : $uTicket['max_count'];
 
             $user_tickets[] = $tmp;
         }
