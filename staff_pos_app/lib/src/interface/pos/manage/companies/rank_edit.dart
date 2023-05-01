@@ -92,10 +92,7 @@ class _RankEdit extends State<RankEdit> {
       errTitle = null;
     }
     if (txtMaxStampsController.text == '') {
-      errMaxStamps = warningCommonInputRequire;
-      isCheck = false;
-    } else {
-      errMaxStamps = null;
+      txtMaxStampsController.text = '0';
     }
 
     dynamic menuParam = {};
