@@ -1184,7 +1184,7 @@ class Apishifts extends WebController
         $staff = $this->staff_model->getStaffHopTime($staff_id);
         
         $results['isLoad'] = true;
-        $results['remain_time'] = $staff['hope_time'] - $shiftData['all_shift'];
+        $results['remain_time'] = (isset($staff['hope_time']) ? $staff['hope_time'] : 0) - (isset($shiftData['all_shift']) ? $shiftData['all_shift'] : 0);
 
         echo json_encode($results);
     }
