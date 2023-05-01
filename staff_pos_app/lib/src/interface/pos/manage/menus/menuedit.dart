@@ -55,6 +55,7 @@ class _MenuEdit extends State<MenuEdit> {
   var txtTitleController = TextEditingController();
   var txtDetailController = TextEditingController();
   var txtPriceController = TextEditingController();
+  var txtStockController = TextEditingController();
   var txtCostController = TextEditingController();
   var txtTaxController = TextEditingController();
   var txtCommentController = TextEditingController();
@@ -66,6 +67,7 @@ class _MenuEdit extends State<MenuEdit> {
   String? errTitle;
   String? errDetail;
   String? errPrice;
+  String? errStock;
   String? errCost;
   String? errTax;
   String? errComment;
@@ -79,6 +81,8 @@ class _MenuEdit extends State<MenuEdit> {
 
   bool isAllOrgan = false;
   List<String> menuOrgans = [];
+
+  bool isStockInfinity = false;
 
   @override
   void initState() {
@@ -99,9 +103,12 @@ class _MenuEdit extends State<MenuEdit> {
       txtTitleController.text = menu.menuTitle;
       txtDetailController.text = menu.menuDetail;
       txtPriceController.text = menu.menuPrice;
+      txtStockController.text =
+          int.parse(menu.menuStock) < 0 ? '無限' : menu.menuStock;
       txtCostController.text = menu.menuCost;
       txtTaxController.text = menu.menuTax;
       txtCommentController.text = menu.menuComment;
+      isStockInfinity = int.parse(menu.menuStock) < 0 ? true : false;
       isUserMenu = menu.isUserMenu;
       isGoods = menu.isGoods;
       menuTime = menu.menuTime;
@@ -190,6 +197,7 @@ class _MenuEdit extends State<MenuEdit> {
       'title': txtTitleController.text,
       'detail': txtDetailController.text,
       'price': txtPriceController.text,
+      'stock': isStockInfinity ? '-1' : txtStockController.text,
       'comment': txtCommentController.text,
       'is_user_menu': isUserMenu ? '1' : '',
       'is_goods': isGoods ? '1' : '0',
@@ -391,6 +399,28 @@ class _MenuEdit extends State<MenuEdit> {
                   controller: txtPriceController,
                   errorText: errPrice,
                   inputType: TextInputType.number)),
+          RowLabelInput(
+              label: '在庫',
+              renderWidget: Row(children: [
+                Flexible(
+                    child: TextInputNormal(
+                  controller: txtStockController,
+                  errorText: errStock,
+                  inputType: TextInputType.number,
+                  isEnable: !isStockInfinity,
+                )),
+                SizedBox(width: 24),
+                InputLeftText(label: '無限大', rPadding: 4, width: 50),
+                CheckNomal(
+                  label: '',
+                  value: isStockInfinity,
+                  scale: 1.5,
+                  tapFunc: (v) {
+                    isStockInfinity = v;
+                    setState(() {});
+                  },
+                ),
+              ])),
           SizedBox(height: 8),
           RowLabelInput(
               label: 'ユーザーメニュー',

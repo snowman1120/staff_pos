@@ -4,6 +4,7 @@ class MenuModel {
   final String menuTitle;
   final String menuDetail;
   final String menuPrice;
+  final String menuStock;
   final String menuCost;
   final String menuTax;
   final String menuComment;
@@ -20,6 +21,7 @@ class MenuModel {
     required this.menuTitle,
     required this.organId,
     required this.menuPrice,
+    required this.menuStock,
     required this.menuCost,
     required this.menuTax,
     required this.menuDetail,
@@ -38,6 +40,7 @@ class MenuModel {
         menuTitle: json['menu_title'] ?? '',
         organId: json['organ_id'] ?? '',
         menuPrice: json['menu_price'] ?? '',
+        menuStock: json['menu_stock'] ?? '',
         menuCost: json['menu_cost'] ?? '',
         menuTax: json['menu_tax'] ?? '',
         menuDetail: json['menu_detail'] ?? '',
