@@ -5233,3 +5233,7 @@ insert  into `verify_codes`(`id`,`company_id`,`email`,`code`,`create_date`,`upda
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+ALTER TABLE `devotion_db`.`user_tickets`   
+  ADD COLUMN `max_count` INT(6) DEFAULT 50 NULL AFTER `ticket_id`;
+  
