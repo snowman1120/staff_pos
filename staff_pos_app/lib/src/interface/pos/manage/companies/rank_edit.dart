@@ -31,12 +31,15 @@ class RankEdit extends StatefulWidget {
 class _RankEdit extends State<RankEdit> {
   late Future<List> loadData;
   var txtTitleController = TextEditingController();
+  var txtMaxStampsController = TextEditingController();
   String? errTitle;
+  String? errMaxStamps;
 
-  String cnt1 = '0+';
-  String cnt2 = '1';
+  // String cnt1 = '0+';
+  // String cnt2 = '1';
 
   List<RankPreferModel> prefers = [];
+  List<RankPreferViewModel> preferViews = [];
   List<MenuModel> menus = [];
   List<CouponModel> coupons = [];
   final dropdownMenuState = GlobalKey<FormFieldState>();
@@ -60,12 +63,20 @@ class _RankEdit extends State<RankEdit> {
     if (widget.rankId != null) {
       RankModel rank = await ClCoupon().loadRankInfo(context, widget.rankId!);
       txtTitleController.text = rank.rankName;
-      int cntPre = int.parse(rank.maxStamp) ~/ 100;
-      cnt1 = '${cntPre * 100}+';
-      cnt2 = (int.parse(rank.maxStamp) - (cntPre * 100)).toString();
+      txtMaxStampsController.text = rank.maxStamp;
+      // int cntPre = int.parse(rank.maxStamp) ~/ 100;
+      // cnt1 = '${cntPre * 100}+';
+      // cnt2 = (int.parse(rank.maxStamp) - (cntPre * 100)).toString();
 
       // ignore: use_build_context_synchronously
       prefers = await ClCoupon().loadRankPrefers(context, '', widget.rankId);
+
+      for (RankPreferModel prefer in prefers) {
+        var controller = TextEditingController();
+        controller.text = prefer.stampCount.toString();
+        preferViews.add(RankPreferViewModel(
+            rankPrefer: prefer, controller: controller, error: null));
+      }
     }
     setState(() {});
     return [];
@@ -80,17 +91,28 @@ class _RankEdit extends State<RankEdit> {
     } else {
       errTitle = null;
     }
+    if (txtMaxStampsController.text == '') {
+      errMaxStamps = warningCommonInputRequire;
+      isCheck = false;
+    } else {
+      errMaxStamps = null;
+    }
 
     dynamic menuParam = {};
     int ii = 0;
-    for (var element in prefers) {
+    for (var preferView in preferViews) {
+      var element = preferView.rankPrefer;
       ii++;
       if (element.stampCount != null &&
           element.prefType != null &&
           (element.menuId != null || element.couponId != null)) {
         menuParam[ii.toString()] = {
           'rank_prefer_id': element.rankPreferId,
-          'stamp_count': element.stampCount,
+          // 'stamp_count': element.stampCount,
+          'stamp_count': int.parse(preferView.controller.text) >
+                  int.parse(txtMaxStampsController.text)
+              ? txtMaxStampsController.text
+              : preferView.controller.text,
           'type': element.prefType,
           'menu_id': element.menuId ?? '',
           'coupon_id': element.couponId ?? '',
@@ -98,14 +120,14 @@ class _RankEdit extends State<RankEdit> {
         };
       }
     }
-    String maxStamp =
-        (int.parse(cnt1.replaceAll('+', '')) + int.parse(cnt2)).toString();
+    // String maxStamp =
+    //     (int.parse(cnt1.replaceAll('+', '')) + int.parse(cnt2)).toString();
 
     setState(() {});
     if (!isCheck) return;
 
     await ClCoupon().saveStamp(context, widget.rankId ?? '', widget.companyId,
-        txtTitleController.text, maxStamp, menuParam);
+        txtTitleController.text, txtMaxStampsController.text, menuParam);
 
     Navigator.of(context).pop();
     Navigator.of(context).pop();
@@ -159,38 +181,53 @@ class _RankEdit extends State<RankEdit> {
             renderWidget: TextInputNormal(
                 controller: txtTitleController, errorText: errTitle)),
         const SizedBox(height: 12),
+        // RowLabelInput(
+        //     label: '最大スタンプ数',
+        //     labelWidth: 120,
+        //     labelPadding: 4,
+        //     renderWidget: Row(
+        //       children: [
+        //         Flexible(
+        //             child: DropDownNumberSelect(
+        //                 value: cnt1,
+        //                 min: 0,
+        //                 max: 900,
+        //                 diff: 100,
+        //                 isPlusLabel: true,
+        //                 tapFunc: (v) => cnt1 = v.toString())),
+        //         const SizedBox(width: 8),
+        //         Flexible(
+        //             child: DropDownNumberSelect(
+        //                 value: cnt2,
+        //                 min: 0,
+        //                 max: 99,
+        //                 tapFunc: (v) => cnt2 = v.toString())),
+        //       ],
+        //     )),
         RowLabelInput(
             label: '最大スタンプ数',
             labelWidth: 120,
             labelPadding: 4,
-            renderWidget: Row(
-              children: [
-                Flexible(
-                    child: DropDownNumberSelect(
-                        value: cnt1,
-                        min: 0,
-                        max: 900,
-                        diff: 100,
-                        isPlusLabel: true,
-                        tapFunc: (v) => cnt1 = v.toString())),
-                const SizedBox(width: 8),
-                Flexible(
-                    child: DropDownNumberSelect(
-                        value: cnt2,
-                        min: 0,
-                        max: 99,
-                        tapFunc: (v) => cnt2 = v.toString())),
-              ],
+            renderWidget: TextInputNormal(
+              controller: txtMaxStampsController,
+              errorText: errMaxStamps,
+              inputType: TextInputType.number,
             )),
+        const SizedBox(height: 12),
         // TextInputNormal(controller: txtTitleController, errorText: errTitle),
         const SizedBox(height: 25),
         const PosDlgInputLabelText(label: '特典'),
-        ...prefers.map((e) => _getPreferRow(e)),
+        // ...prefers.map((e) => _getPreferRow(e)),
+        ...preferViews.map((e) => _getPreferRow(e)),
         RowButtonGroup(widgets: [
           WhiteButton(
               label: '特典追加',
               tapFunc: () {
-                prefers.add(RankPreferModel.fromJson({}));
+                preferViews.add(RankPreferViewModel(
+                    rankPrefer: RankPreferModel.fromJson({}),
+                    controller: TextEditingController(),
+                    error: null));
+                // prefers.add(RankPreferModel.fromJson({}));
                 setState(() {});
               })
         ]),
@@ -212,7 +249,8 @@ class _RankEdit extends State<RankEdit> {
     );
   }
 
-  Widget _getPreferRow(RankPreferModel item) {
+  Widget _getPreferRow(RankPreferViewModel preferView) {
+    var item = preferView.rankPrefer;
     preferNo++;
     return Container(
         padding: const EdgeInsets.symmetric(vertical: 4),
@@ -229,7 +267,7 @@ class _RankEdit extends State<RankEdit> {
                   fontWeight: FontWeight.bold),
             ),
             const SizedBox(width: 12),
-            _getStampNumberContent(item),
+            _getStampNumberContent(preferView),
             const SizedBox(width: 8),
             Flexible(
                 flex: 2,
@@ -256,7 +294,8 @@ class _RankEdit extends State<RankEdit> {
                 child: const Icon(Icons.delete, color: Colors.red),
                 onTap: () {
                   if (item.rankPreferId == '') {
-                    prefers.remove(item);
+                    // prefers.remove(item);
+                    preferViews.remove(item);
                   } else {
                     item.isDelete = true;
                   }
@@ -267,14 +306,26 @@ class _RankEdit extends State<RankEdit> {
         ));
   }
 
-  Widget _getStampNumberContent(item) {
+  Widget _getStampNumberContent(RankPreferViewModel item) {
+    if (item.controller.text == '') {
+      item.controller.text = '0';
+      item.rankPrefer.stampCount = '0';
+    } else if (int.parse(txtMaxStampsController.text) <
+        int.parse(item.controller.text)) {
+      item.controller.text = txtMaxStampsController.text;
+    }
     return Flexible(
-        child: DropDownNumberSelect(
-            caption: '必要数',
-            value: item.stampCount,
-            min: 1,
-            max: maxStampt,
-            tapFunc: (v) => item.stampCount = v));
+        // child: DropDownNumberSelect(
+        //     caption: '必要数',
+        //     value: item.stampCount,
+        //     min: 1,
+        //     max: maxStampt,
+        //     tapFunc: (v) => item.stampCount = v));
+        child: TextInputNormal(
+      controller: item.controller,
+      errorText: item.error,
+      inputType: TextInputType.number,
+    ));
   }
 
   Widget _getPrefType(item) {
@@ -322,4 +373,16 @@ class _RankEdit extends State<RankEdit> {
       tapFunc: (v) => item.couponId = v.toString(),
     );
   }
+}
+
+class RankPreferViewModel {
+  final RankPreferModel rankPrefer;
+  final TextEditingController controller;
+  String? error;
+
+  RankPreferViewModel({
+    required this.rankPrefer,
+    required this.controller,
+    required this.error,
+  });
 }
