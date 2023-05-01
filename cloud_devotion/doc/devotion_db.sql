@@ -5237,3 +5237,5 @@ insert  into `verify_codes`(`id`,`company_id`,`email`,`code`,`create_date`,`upda
 ALTER TABLE `devotion_db`.`user_tickets`   
   ADD COLUMN `max_count` INT(6) DEFAULT 50 NULL AFTER `ticket_id`;
   
+ALTER TABLE `devotion_db`.`menus`   
+	ADD COLUMN `menu_stock` INT(6) DEFAULT 0 NULL AFTER `category_id`;

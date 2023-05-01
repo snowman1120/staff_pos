@@ -216,6 +216,7 @@ class Apimenus extends WebController
         $menu['menu_title'] = $this->input->post('title');
         $menu['menu_detail']  = $this->input->post('detail');
         $menu['menu_price'] = $this->input->post('price');
+        $menu['menu_stock'] = $this->input->post('stock');
         $menu['menu_comment'] = $this->input->post('comment');
         $menu['is_user_menu'] = empty($this->input->post('is_user_menu')) ? null : $this->input->post('is_user_menu');
         $menu['is_goods'] = empty($this->input->post('is_goods')) ? 0 : $this->input->post('is_goods');
