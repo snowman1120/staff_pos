@@ -184,22 +184,24 @@ class ClShift {
     return appointments;
   }
 
-  Future<String> loadRemainShiftTime(context, String staffId) async {
+  Future<bool> loadStaffShiftTime(
+      context, String staffId, String organId) async {
     Map<dynamic, dynamic> results = {};
 
-    String apiUrl = '$apiBase/apishifts/getReaminShiftTime';
-    await Webservice().loadHttp(context, apiUrl, {'staff_id': staffId}).then(
-            (value) => results = value);
+    String apiUrl = '$apiBase/apishifts/getStaffShiftTime';
+    await Webservice().loadHttp(context, apiUrl, {
+      'staff_id': staffId,
+      'organ_id': organId
+    }).then((value) => results = value);
 
     if (results['isLoad']) {
-      if (results['remain_time'] < 0) {
-        return '0';
-      }else {
-        return results['remain_time'].toString();
-      }
+      globals.staffApplyTime = results['shift_apply_time'].toString();
+      globals.staffApplicationTime =
+          results['shift_application_time'].toString();
+      return true;
     }
 
-    return '';
+    return false;
   }
 
   Future<List<TimeRegion>> loadActiveShiftRegions(

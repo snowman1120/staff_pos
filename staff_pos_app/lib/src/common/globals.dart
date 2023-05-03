@@ -1,6 +1,5 @@
 import 'package:staff_pos_app/src/model/order_menu_model.dart';
 
-
 // SharedPreferences Key
 String isBiometricEnableKey = 'isBiometricEnable_key';
 String isSaveLoginInfoKey = 'isSaveLoginInfo_key';
@@ -30,3 +29,6 @@ var organShifts = [];
 List<dynamic> saveControlShifts = [];
 int progressPercent = 0;
 bool isUpload = false;
+
+String? staffApplyTime = '';
+String? staffApplicationTime = '';
