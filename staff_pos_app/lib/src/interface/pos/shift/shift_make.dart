@@ -53,7 +53,8 @@ class _ShiftMake extends State<ShiftMake> {
   DateTime? reserveTo;
   String? reserveId;
 
-  String remainShiftTime = '';
+  String? applyShiftTime = '';
+  String? applicationShiftTime = '';
 
   @override
   void initState() {
@@ -66,10 +67,16 @@ class _ShiftMake extends State<ShiftMake> {
     String fromTime = '$showFromDate 00:00:00';
     String toTime = '$showToDate 23:59:59';
 
-    remainShiftTime = await ClShift().loadRemainShiftTime(context, globals.staffId);
-
     organList = await ClOrgan().loadOrganList(context, '', globals.staffId);
     selOrganId ??= organList.first.organId;
+
+    bool isLoad = await ClShift()
+        .loadStaffShiftTime(context, globals.staffId, selOrganId!);
+
+    if (isLoad) {
+      applyShiftTime = globals.staffApplyTime;
+      applicationShiftTime = globals.staffApplicationTime;
+    }
     regions = await ClShift()
         .loadActiveShiftRegions(context, selOrganId!, showFromDate);
     regions.addAll(await ClShift()
@@ -208,14 +215,18 @@ class _ShiftMake extends State<ShiftMake> {
 
   Future<void> onTapReserveApply() async {
     if (reserveId == null) return;
-    bool isSave = await ClOrder().applyReserveOrder(context, reserveId, globals.staffId);
+    bool isSave =
+        await ClOrder().applyReserveOrder(context, reserveId, globals.staffId);
     if (isSave) refreshLoad();
   }
 
   Future<void> onTapReserveReject() async {
     if (reserveId == null) return;
-    bool isSave = await ClOrder().updateOrder(
-        context, {'reserve_id': reserveId, 'status': constOrderStatusReserveReject, 'staff_id': globals.staffId});
+    bool isSave = await ClOrder().updateOrder(context, {
+      'reserve_id': reserveId,
+      'status': constOrderStatusReserveReject,
+      'staff_id': globals.staffId
+    });
     if (isSave) refreshLoad();
   }
 
@@ -269,7 +280,8 @@ class _ShiftMake extends State<ShiftMake> {
         Expanded(
           // child: SubHeaderText(
           //     label: DateTimes().convertJPYMFromString(showFromDate)),
-          child: Text('出勤希望時間まで残り ${remainShiftTime} 分'),
+          child: Text(
+              '承認時間 ${applyShiftTime} 分\n勤務申請時間 ${applicationShiftTime} 分'),
         ),
         Container(
           child: WhiteButton(label: '標準設定適用', tapFunc: () => onTapInitButton()),
