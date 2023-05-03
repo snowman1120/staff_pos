@@ -56,7 +56,7 @@ class Managements extends WebController
 
             $_applies = $this->shift_model->getListByCond(['organ_id' => $organ_id, 'in_from_time' => $times[$i], 'in_to_time' => $times[$i+1], 'is_apply' => '1']);
             $tmp['apply'] = empty($_applies) ? 0 : count($_applies);
-
+ 
             $_shifts = $this->shift_model->getListByCond(['organ_id' => $organ_id, 'in_from_time' => $times[$i], 'in_to_time' => $times[$i+1], 'is_apply_enable' => '1']);
             $tmp['shift'] = empty($_shifts) ? 0 : count($_shifts);
 
@@ -79,8 +79,8 @@ class Managements extends WebController
         $organ = $this->organ_model->getFromId($organ_id);
         $company_id = $organ['company_id'];
 
-        $json = $this->input->post('data');        
-        $datas = json_decode($json, true);
+        $json = $this->input->post('data');   
+        $datas = json_decode($json, true);   
         foreach ($datas as $data){
             $staff_id = $data['staff_id'];
             $from_time = $data['from_time'];
@@ -237,7 +237,7 @@ class Managements extends WebController
 
         $fdate = new DateTime($from_time);
         $tdate = new DateTime($to_time);
-
+        
         $content = $fdate->format('n月j日 H時i分').'から'. $tdate->format('H時i分') . 'まで'.$strMsg;
 
         $is_fcm = $this->sendNotifications($update_value, $title, $content, $sender_id, $receiver_id, '1');
