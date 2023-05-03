@@ -604,10 +604,10 @@ class AdminController extends CI_Controller
 
             $badge = $this->notification_model->getBageCount($receiver_id, $receiver_type);
 
-            if ($company['is_push']==1){
+            if (isset($company) && $company['is_push']==1){
                 $isFcm = $this->sendFireBaseMessage($n_type, $sender_id, $title, $content, $token_data, $badge);
             }
-            if ($company['is_mail']==1){
+            if (isset($company) && $company['is_mail']==1){
                 $isMail = $this->sendMailMessage($title, $content, $mail_address);
             }
         }
