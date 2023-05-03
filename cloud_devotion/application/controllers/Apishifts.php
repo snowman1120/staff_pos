@@ -1178,13 +1178,14 @@ class Apishifts extends WebController
 
     }
 
-    public function getReaminShiftTime() {
+    public function getStaffShiftTime() {
         $staff_id = $this->input->get_post('staff_id');
-        $shiftData = $this->shift_model->getStaffShiftAllTime($staff_id);
-        $staff = $this->staff_model->getStaffHopTime($staff_id);
-        
+        $organ_id = $this->input->get_post('organ_id');
+        $shiftData = $this->shift_model->getStaffShiftTime($staff_id, $organ_id);
+
         $results['isLoad'] = true;
-        $results['remain_time'] = (isset($staff['hope_time']) ? $staff['hope_time'] : 0) - (isset($shiftData['all_shift']) ? $shiftData['all_shift'] : 0);
+        $results['shift_apply_time'] = isset($shiftData['shift_apply_time']) ? abs($shiftData['shift_apply_time']) : 0;
+        $results['shift_application_time'] = isset($shiftData['shift_application_time']) ? abs($shiftData['shift_application_time']) : 0;
 
         echo json_encode($results);
     }
