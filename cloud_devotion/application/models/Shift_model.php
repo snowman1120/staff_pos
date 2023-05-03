@@ -388,6 +388,21 @@ order by tmp.time
         return $query->row_array();
     }
 
+    public function getStaffShiftTime($staff_id, $organ_id) {
+        $strSql = "SELECT staff_id, sum(shift_apply_time) as shift_apply_time, sum(shift_application_time) as shift_application_time FROM 
+                    (SELECT staff_id, TIMESTAMPDIFF(MINUTE, from_time, to_time) shift_apply_time, 0 AS shift_application_time
+                        FROM shifts 
+                        WHERE (shift_type = 9 or shift_type=10) and staff_id=" . $staff_id . " and organ_id=" . $organ_id . "
+                    UNION
+                    SELECT staff_id, 0 AS shift_apply_time, TIMESTAMPDIFF(MINUTE, from_time, to_time) shift_application_time
+                        FROM shifts 
+                        WHERE (shift_type = 1 or shift_type=5) and staff_id=" . $staff_id . " and organ_id=" . $organ_id . ") as final";
+
+        $query = $this->db->query($strSql);
+
+        return $query->row_array();
+    }
+
     public function getStaffOtherShopShiftTime($organ_id, $staff_id) {
         
         $strSql = "select staff_id, sum(TIMESTAMPDIFF(MINUTE, from_time, to_time)) as all_shift, 0 as hope_time, 0 as reserve,  0 as submit, 0 as apply, 0 as pshift, 0 as rest, 0 as link
