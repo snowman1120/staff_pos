@@ -21,7 +21,8 @@ class AdminCuponList extends StatefulWidget {
   _AdminCuponList createState() => _AdminCuponList();
 }
 
-class _AdminCuponList extends State<AdminCuponList> {
+class _AdminCuponList extends State<AdminCuponList>
+    with WidgetsBindingObserver {
   late Future<List> loadData;
   List<CouponModel> coupons = [];
   List<String> openDetailList = [];
@@ -29,7 +30,21 @@ class _AdminCuponList extends State<AdminCuponList> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     loadData = loadCouponList();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      //do your stuff
+    }
   }
 
   Future<List> loadCouponList() async {

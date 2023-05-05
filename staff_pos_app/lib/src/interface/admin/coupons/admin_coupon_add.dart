@@ -62,7 +62,7 @@ class _AdminCuponAdd extends State<AdminCuponAdd> {
 
   Future<List> loadCouponData() async {
     percents = [];
-    for (int i = 1; i <= 100; i++) {
+    for (int i = 0; i <= 100; i++) {
       percents.add(i.toString());
     }
     Map<dynamic, dynamic> organResults = {};
