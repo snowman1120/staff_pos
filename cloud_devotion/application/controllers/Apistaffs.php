@@ -269,7 +269,7 @@ class Apistaffs extends WebController
             return;
         }
 
-        if (!$this->staff_model->isMailCheck($this->input->post('staff_mail'), $this->input->post('staff_id'))){
+        if (!$this->staff_model->isMailCheck($this->input->post('staff_mail'), $this->input->post('staff_id'), $company_id)){
             $results['isSave'] =false;
             $results['err_type'] = 'mail_input_err';
             echo json_encode($results);

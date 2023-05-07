@@ -53,9 +53,10 @@ class Staff_model extends Base_model
         return $query->result_array();
     }
 
-    function isMailCheck($email, $staff_id){
+    function isMailCheck($email, $staff_id, $company_id){
         $this->db->from($this->table);
         $this->db->where('staff_mail', $email);
+        $this->db->where('company_id', $company_id);
 
         if (!empty($staff_id)){
             $this->db->where("staff_id <>".$staff_id);
