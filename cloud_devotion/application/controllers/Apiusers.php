@@ -255,7 +255,7 @@ class Apiusers extends WebController
             $user_tickets = json_decode($this->input->post('user_tickets'), true);
 //        $user_tickets = json_decode($s, true);
             foreach ($user_tickets as $user_ticket) {
-                if (intval($user_ticket['count']) > intval($user_ticket['max_count'])) 
+                if ($user_ticket['max_count'] > 0 && intval($user_ticket['count']) > intval($user_ticket['max_count'])) 
                     $user_ticket['count'] = $user_ticket['max_count'];
                 if (empty($user_ticket['id'])) {
                     $ticket = array(
