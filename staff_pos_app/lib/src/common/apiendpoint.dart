@@ -1,5 +1,4 @@
-// String apiBase = 'https://www.visit-pos.com/cloud_devotion';
-String apiBase = 'https://205.209.99.153:443/staff_pos/cloud_devotion';
+String apiBase = 'https://www.visit-pos.com/cloud_devotion';
 String apiMaster = '$apiBase/apis/master';
 
 String adviseMovieBase = '$apiBase/assets/video/advise/';
