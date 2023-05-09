@@ -190,6 +190,9 @@ class _AdminUserEdit extends State<AdminUserEdit> {
     List<dynamic> paramTickets = [];
 
     userTickets.forEach((element) {
+      if (element.isInfinityCount != null && element.isInfinityCount == true) {
+        element.maxCount = '-1';
+      }
       paramTickets.add(element.toJson());
       // paramTickets.addAll(element.toJson());
     });
@@ -463,27 +466,62 @@ class _AdminUserEdit extends State<AdminUserEdit> {
             labelWidth: 180,
             labelPadding: 6,
             label: '最大保有チケット数',
-            renderWidget: DropDownNumberSelect(
-                contentPadding: EdgeInsets.all(6),
-                max: 99,
-                min: 0,
-                value: item.maxCount,
-                tapFunc: (v) {
-                  item.maxCount = v;
-                  setState(() {});
-                })),
+            renderWidget: Row(children: [
+              Flexible(
+                  child: DropDownNumberSelect(
+                      contentPadding: EdgeInsets.all(6),
+                      max: 99,
+                      min: 0,
+                      value:
+                          int.parse(item.maxCount) >= 0 ? item.maxCount : '0',
+                      tapFunc: item.isInfinityCount
+                          ? null
+                          : (v) {
+                              item.maxCount = v;
+                              setState(() {});
+                            })),
+              SizedBox(width: 24),
+              //InputLeftText(label: '無限大', rPadding: 4, width: 50),
+              Switch(
+                  value: item.isInfinityCount,
+                  onChanged: (v) {
+                    item.isInfinityCount = v;
+                    setState(() {});
+                  }),
+            ])),
         RowLabelInput(
             labelWidth: 180,
             labelPadding: 6,
             label: item.title + ' [' + item.name + ']',
-            renderWidget: DropDownNumberSelect(
-                contentPadding: EdgeInsets.all(6),
-                max: int.parse(item.maxCount),
-                min: 0,
-                value: int.parse(item.count) > int.parse(item.maxCount)
-                    ? item.maxCount
-                    : item.count,
-                tapFunc: (v) => item.count = v)),
+            renderWidget: item.isInfinityCount
+                ? TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      isDense: true,
+                      contentPadding: EdgeInsets.all(6),
+                      fillColor: Colors.white,
+                      filled: true,
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFbebebe)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFbebebe)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFbebebe)),
+                      ),
+                    ),
+                    initialValue: item.count,
+                    onChanged: (value) => item.count = value,
+                  )
+                : DropDownNumberSelect(
+                    contentPadding: EdgeInsets.all(6),
+                    max: int.parse(item.maxCount),
+                    min: 0,
+                    value: int.parse(item.count) > int.parse(item.maxCount)
+                        ? item.maxCount
+                        : item.count,
+                    tapFunc: (v) => item.count = v)),
         RowLabelInput(
           labelWidth: 180,
           labelPadding: 6,
@@ -540,21 +578,43 @@ class _AdminUserEdit extends State<AdminUserEdit> {
             labelWidth: 180,
             labelPadding: 6,
             label: 'リセット枚数',
-            renderWidget: DropDownNumberSelect(
-              contentPadding: EdgeInsets.all(6),
-              value: int.parse(item.resetCount) > int.parse(item.maxCount)
-                  ? item.maxCount
-                  : item.resetCount,
-              plusnum: 10,
-              max: int.parse(item.maxCount),
-              min: 0,
-              tapFunc: item.isReset == '0'
-                  ? null
-                  : (v) {
-                      item.resetCount = v;
-                      setState(() {});
-                    },
-            )),
+            renderWidget: item.isInfinityCount
+                ? TextFormField(
+                    keyboardType: TextInputType.number,
+                    enabled: item.isReset == '0' ? false : true,
+                    decoration: const InputDecoration(
+                      isDense: true,
+                      contentPadding: EdgeInsets.all(6),
+                      fillColor: Colors.white,
+                      filled: true,
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFbebebe)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFbebebe)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFbebebe)),
+                      ),
+                    ),
+                    initialValue: item.resetCount,
+                    onChanged: (value) => item.resetCount = value,
+                  )
+                : DropDownNumberSelect(
+                    contentPadding: EdgeInsets.all(6),
+                    value: int.parse(item.resetCount) > int.parse(item.maxCount)
+                        ? item.maxCount
+                        : item.resetCount,
+                    plusnum: 10,
+                    max: int.parse(item.maxCount),
+                    min: 0,
+                    tapFunc: item.isReset == '0'
+                        ? null
+                        : (v) {
+                            item.resetCount = v;
+                            setState(() {});
+                          },
+                  )),
       ]),
     );
   }
