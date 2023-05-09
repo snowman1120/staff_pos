@@ -103,12 +103,15 @@ class _MenuEdit extends State<MenuEdit> {
       txtTitleController.text = menu.menuTitle;
       txtDetailController.text = menu.menuDetail;
       txtPriceController.text = menu.menuPrice;
-      txtStockController.text =
-          int.parse(menu.menuStock) < 0 ? '無限' : menu.menuStock;
+      txtStockController.text = menu.menuStock == ''
+          ? '0'
+          : (int.parse(menu.menuStock) < 0 ? '無限' : menu.menuStock);
       txtCostController.text = menu.menuCost;
       txtTaxController.text = menu.menuTax;
       txtCommentController.text = menu.menuComment;
-      isStockInfinity = int.parse(menu.menuStock) < 0 ? true : false;
+      isStockInfinity = menu.menuStock == ''
+          ? false
+          : (int.parse(menu.menuStock) < 0 ? true : false);
       isUserMenu = menu.isUserMenu;
       isGoods = menu.isGoods;
       menuTime = menu.menuTime;
