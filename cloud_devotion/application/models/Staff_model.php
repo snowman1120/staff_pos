@@ -81,7 +81,7 @@ class Staff_model extends Base_model
     public function getStaffs($cond){
         $this->db->select($this->table.'.*');
         $this->db->from($this->table);
-        $this->db->join('staff_organs', 'staff_organs.staff_id = staffs.staff_id', 'right');
+        $this->db->join('staff_organs', 'staff_organs.staff_id = staffs.staff_id', 'left');
 
         if (!empty($cond['staff_sex'])){
             $this->db->where('staff_sex', $cond['staff_sex']);
